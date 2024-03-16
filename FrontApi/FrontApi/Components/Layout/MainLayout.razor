@@ -1,0 +1,81 @@
+﻿@inherits LayoutComponentBase
+@inject IEnderecosService enderecoService
+
+<FluentLayout>
+
+    <FluentDialogProvider @rendermode="@InteractiveServer" />
+    <FluentToastProvider @rendermode="@InteractiveServer" />
+
+    <FluentHeader>
+        Consultas Brasil Api
+    </FluentHeader>
+
+    <FluentStack Class="main" Orientation="Orientation.Horizontal" Width="100%">
+        <NavMenu />
+
+        <FluentBodyContent Class="body-content">
+            <div class="content">
+
+                <h4>Informe o CEP</h4>
+                <FluentTextField @bind-Value=value1 Required="true"></FluentTextField>
+                <br />
+                <FluentButton IconEnd="@(new Icons.Regular.Size16.Globe())">
+                    Button
+                </FluentButton>
+
+                <br />
+                <br />
+                <br />
+                <h4>Informe Código do Banco</h4>
+                <FluentTextField @bind-Value=value1 Required="true"></FluentTextField>
+                <br />
+                <FluentButton IconEnd="@(new Icons.Regular.Size16.Globe())">
+                    Button
+                </FluentButton>
+
+                <br />
+                <br />
+                <br />
+                <h4>Informe o CNPJ</h4>
+                <FluentTextField @bind-Value=value1 Required="true"></FluentTextField>
+                <br />
+
+                <FluentButton IconEnd="@(new Icons.Regular.Size16.Globe())">
+                    Button
+                </FluentButton>
+            </div>
+        </FluentBodyContent>
+
+    </FluentStack>
+
+
+    <FluentFooter>
+        <div class="link1">
+            <a href="https://www.github.com/PRbrate" target="_blank">Meu GitHub</a>
+        </div>
+        <div class="link2">
+            <a href="https://www.linkedin.com/in/paulo-roberto-brand%C3%A3o-48729a211" target="_blank">Meu Linkedin</a>
+        </div>
+    </FluentFooter>
+
+
+</FluentLayout>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+    public EnderecoDto? Endereco { get; set; }
+
+    [Parameter]
+    public string? getEndereco { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Endereco = await enderecoService.BuscarEndereco(getEndereco);
+    }
+    string? value1, value2 = "Disabled", value3 = "Disabled", value4 = "Disabled", value5 = "Read only", value6 = "Read only";
+}
