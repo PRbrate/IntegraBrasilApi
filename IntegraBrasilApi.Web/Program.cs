@@ -13,11 +13,11 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 builder.Services.AddScoped<IEnderecoServiceWeb, EnderecoServiceWeb>();
 
-var baseUUrl = "https://localhost:7066";
+var baseUrl = "https://localhost:7066";
 
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri(baseUUrl)
+    BaseAddress = new Uri(baseUrl)
 });
 
 await builder.Build().RunAsync();
