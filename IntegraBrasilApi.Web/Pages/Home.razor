@@ -3,7 +3,18 @@
 <PageTitle>Home</PageTitle>
 
 <EditForm Model="EnderecoService" OnSubmit="Submit">
-    <div cl ass="form-group">
+    <form>
+        <div class="form-group">
+            <label for="CepInput">Digite o Cep</label>
+            <InputText @bind-Value="Cep" class="form-control" id="CepInput" aria-describedby="CepHelp" placeholder="Cep desejado" />
+            <small id="CepHelp" class="form-text text-muted">Digite o Cep para fazemor a requisição.</small>
+        </div>
+    </form>
+    <div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </div>
+
+    @* <div cl ass="form-group">
         <h3>Digite o Cep</h3>
         <label>
             Cep:
@@ -12,32 +23,44 @@
     </div>
     <div>
         <button type="submit">Enviar</button>
-    </div>
+    </div> *@
 </EditForm>
 
 
 @if (Endereco.Cep is null)
 {
-    <h3></h3>
+    <p>@MessageError</p>
 }
 else
 {
     @if (MessageError is not null)
     {
-        <h2>@MessageError</h2>
+        <p>@MessageError</p>
     }
     else
     {
-        <h3>Dados do Cep: "{@Cep}"</h3>
-        <div class="row">
-            <div class="col-md-6">
-                <h2>@Cep</h2>
-                <p class="mb-4">@Endereco.Etado</p>
-                <p class="mb-4">@Endereco.Cidade</p>]
-                <p class="mb-4">@Endereco.Regiao</p>
-                <p class="mb-4">@Endereco.Rua</p>
-            </div>
-        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Cep</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Cidade</th>
+                    <th scope="col">Regiao</th>
+                    <th scope="col">Rua</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>@Endereco.Cep</td>
+                    <td>@Endereco.Etado</td>
+                    <td>@Endereco.Cidade</td>
+                    <td>@Endereco.Regiao</td>
+                    <td>@Endereco.Rua</td>
+                </tr>
+            </tbody>
+        </table>
     }
 }
 
@@ -52,6 +75,8 @@ else
 
     public EnderecoDto? Endereco { get; set; }
 
+    private bool clicou = false;
+
     public string? MessageError { get; set; }
 
     protected override void OnInitialized() => Endereco ??= new();
@@ -62,14 +87,15 @@ else
         if (Cep is not null)
         {
             GetEndereco();
+            clicou = true;
         }
         else
         {
             MessageError = "Deve ser passado um cep para procurar";
         }
+
+
     }
-
-
 
     private async Task<EnderecoDto> GetEndereco()
     {
@@ -80,7 +106,8 @@ else
         }
         catch (Exception ex)
         {
-            throw new Exception($"Erro ao fazer requisição");
+            MessageError = $"Erro ao fazer requisição";
+            throw;
         }
     }
 

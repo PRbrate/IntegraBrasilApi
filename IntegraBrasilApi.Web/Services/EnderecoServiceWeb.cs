@@ -20,7 +20,7 @@ namespace IntegraBrasilApi.Web.Services
         {
             try{
 
-                var response = await _httpCliet.GetAsync($"api/endereco/{cep}");
+                var response = await _httpCliet.GetAsync($"api/endereco/buscar/{cep}");
 
                 if (response.IsSuccessStatusCode) 
                 {

@@ -5,7 +5,7 @@ using System.Net;
 namespace IntegraBrasilApi.Controllers
 {
     [ApiController]
-    [Route("api/endereco")]
+    [Route("api/endereco/")]
     public class EnderecoController : ControllerBase
     {
         private readonly IEnderecoService _enderecoService;
