@@ -1,0 +1,73 @@
+﻿@page "/"
+
+
+<PageTitle>Home</PageTitle>
+
+<form>
+    <div class="form-group">
+        <h3>Digite o Cep</h3>
+        <label for="CepDigitado">Endereço de email</label>
+        <input type="text" class="form-control" @bind="Cep" id="CepDigitado" aria-describedby="Cepdig" placeholder="Cep">
+        <small id="Cepdig" class="form-text text-muted">Digite seu Cep para fazermos a Busca</small>
+    </div>
+    <button type="button" @onclick="() => GetEndereco(Cep)" class="btn btn-primary">Enviar</button>
+</form>
+
+@if (MessageError is not null)
+{
+    <h3>@MessageError</h3>
+}
+else
+{
+    <h3>Dados do Cep: "{@Cep}"</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>@Cep</h2>
+            <p class="mb-4">@Endereco.Etado</p>
+            <p class="mb-4">@Endereco.Cidade</p>]
+            <p class="mb-4">@Endereco.Regiao</p>
+            <p class="mb-4">@Endereco.Rua</p>
+        </div>
+    </div>
+}
+
+var docu
+
+@code {
+
+
+    [Inject]
+    public IEnderecoServiceWeb? EnderecoService { get; set; }
+
+    [Parameter]
+    public string? Cep { get; set; }
+
+    public EnderecoDto? Endereco { get; set; }
+
+    public string? MessageError { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Endereco = await EnderecoService.endereco("44350000");
+        }
+        catch (Exception ex)
+        {
+            MessageError = ex.Message;
+        }
+    }
+
+    private async Task<EnderecoDto> GetEndereco(string Cep)
+    {
+        var enderecoDto = await EnderecoService.endereco(Cep);
+
+        if (enderecoDto is not null)
+        {
+            Endereco = enderecoDto;
+            return null;
+        }
+        return null;
+    }
+
+}
