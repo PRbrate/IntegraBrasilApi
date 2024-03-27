@@ -18,7 +18,7 @@
                 <FluentTextField Appearance="FluentInputAppearance.Filled"
                                  Label="Consultar Cep:" @bind-Value="Cep"
                                  Maxlength="8" Minlength="8" Placeholder="Digite o cep" />
-                <ValidationMessage For="() => Endereco!.Cep" class="text-danger" />
+                @* <ValidationMessage For="() => Endereco!.Cep" class="text-danger" /> *@
             </div>
             <FluentButton IconStart="@(new Icons.Regular.Size16.Globe())"
                           Appearance="Appearance.Accent" Type="ButtonType.Submit">
@@ -120,9 +120,10 @@
 
     [Inject]
     public IEnderecoServiceFWeb? EnderecoService { get; set; }
-    public string? Cep { get; set; }
 
     [SupplyParameterFromForm]
+    public string? Cep { get; set; }
+
     public EnderecoDto? Endereco { get; set; }
 
     public string? MessageError { get; set; }
