@@ -75,40 +75,41 @@ else
 
     public EnderecoDto? Endereco { get; set; }
 
-    private bool clicou = false;
-
     public string? MessageError { get; set; }
 
     protected override void OnInitialized() => Endereco ??= new();
 
+        // protected override async Task OnInitializedAsync()
+        // {
+        //     await base.OnInitializedAsync();
+        // }
 
-    private void Submit()
+    private async Task<bool> Submit()
     {
         if (Cep is not null)
         {
-            GetEndereco();
-            clicou = true;
+            Endereco = await EnderecoService.endereco(Cep);
         }
         else
         {
             MessageError = "Deve ser passado um cep para procurar";
         }
-
+        return await Task.FromResult(true);
 
     }
 
-    private async Task<EnderecoDto> GetEndereco()
-    {
-        try
-        {
-            Endereco = await EnderecoService.endereco(Cep);
-            return Endereco;
-        }
-        catch (Exception ex)
-        {
-            MessageError = $"Erro ao fazer requisição";
-            throw;
-        }
-    }
+    // private async Task<EnderecoDto> GetEndereco()
+    // {
+    //     try
+    //     {
+    //         Endereco = await EnderecoService.endereco(Cep);
+    //         return Endereco;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         MessageError = $"Erro ao fazer requisição";
+    //         throw;
+    //     }
+    // }
 
 }

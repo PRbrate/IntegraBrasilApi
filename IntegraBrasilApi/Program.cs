@@ -38,6 +38,13 @@ app.UseCors( policy =>
         .WithHeaders(HeaderNames.ContentType)
     );
 
+app.UseCors(policy =>
+        policy.WithOrigins("https://localhost:7245")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithHeaders(HeaderNames.ContentType)
+    );
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

@@ -1,0 +1,118 @@
+﻿@page "/"
+@using IntegraBrasilApi.DTOs
+@using IntegraBrasilApi.Web.Services.Interfaces
+
+<PageTitle>Buscas Integra Brasil</PageTitle>
+
+<h3>Requisições Cep, Banco e CNPJ</h3>
+
+
+<FluentSplitter BarSize="6" Panel1MinSize="15%" Panel2MinSize="100px">
+    <Panel1>
+        <EditForm Model="Endereco" method="post" FormName="consulta" OnValidSubmit="@Submit">
+            <DataAnnotationsValidator />
+            <hr />
+            <div class="form-group">
+            <FluentTextField Appearance="FluentInputAppearance.Filled"
+                             Label="Consultar Cep:" @bind-Value="Cep"
+                             Maxlength="8" Minlength="8"/>
+            @* aria-describedby="CepHelp" *@
+            @* <small id="CepHelp" class="form-text text-muted">Digite o Cep para fazemor a requisição.</small> *@
+            </div>
+            <FluentButton IconStart="@(new Icons.Regular.Size16.Globe())"
+                          Appearance="Appearance.Accent" Type="ButtonType.Submit">
+                Consultar Cep
+            </FluentButton>
+            <hr />
+
+        </EditForm>
+    </Panel1>
+    <Panel2>
+        <FluentCard Width="900px" Height="400px">
+            @if (Endereco.Cep is null)
+            {
+                <p>@MessageError</p>
+            }
+            else
+            {
+                @if (MessageError is not null)
+                {
+                    <p>@MessageError</p>
+                }
+                else
+                {
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Cep</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Cidade</th>
+                                <th scope="col">Regiao</th>
+                                <th scope="col">Rua</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>@Endereco.Cep</td>
+                                <td>@Endereco.Etado</td>
+                                <td>@Endereco.Cidade</td>
+                                <td>@Endereco.Regiao</td>
+                                <td>@Endereco.Rua</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+            }
+
+        </FluentCard>
+    </Panel2>
+</FluentSplitter>
+
+@* <form>
+    <div class="form-group">
+        <label for="CepInput">Digite o Cep</label>
+        <InputText @bind-Value="Cep" class="form-control" id="CepInput" aria-describedby="CepHelp" placeholder="Cep desejado" />
+        <small id="CepHelp" class="form-text text-muted">Digite o Cep para fazemor a requisição.</small>
+    </div>
+</form>
+<div>
+    <button type="submit" class="btn btn-primary">Enviar</button>
+</div>
+ *@
+
+@code {
+
+
+    [Inject]
+    public IEnderecoServiceFWeb? EnderecoService { get; set; }
+
+    [SupplyParameterFromForm]
+    public string? Cep { get; set; }
+    
+    public EnderecoDto? Endereco { get; set; }
+
+    public string? MessageError { get; set; }
+
+    protected override void OnInitialized() => Endereco ??= new();
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     await base.OnInitializedAsync();
+    // }
+
+    private async Task<bool> Submit()
+    {
+        if (Cep is not null)
+        {
+            Endereco = await EnderecoService.endereco(Cep);
+        }
+        else
+        {
+            MessageError = "Deve ser passado um cep para procurar";
+        }
+        return await Task.FromResult(true);
+
+    }
+}
