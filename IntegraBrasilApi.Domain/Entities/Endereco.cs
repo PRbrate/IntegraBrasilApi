@@ -8,7 +8,7 @@ namespace IntegraBrasilApi.Entities
         public string? Cep { get; set; }
 
         [JsonPropertyName("state")]
-        public string? Etado { get; set; }
+        public string? Estado { get; set; }
 
         [JsonPropertyName("city")]
         public string? Cidade { get; set; }

@@ -1,3 +1,6 @@
+using IntegraBrasilApi.Application.Mappings;
+using IntegraBrasilApi.Application.Service;
+using IntegraBrasilApi.Application.Service.Intefaces;
 using IntegraBrasilApi.Mappings;
 using IntegraBrasilApi.Service;
 using IntegraBrasilApi.Service.Intefaces;
@@ -16,9 +19,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IEnderecoService, EnderecoService>();
 builder.Services.AddScoped<IBrasilApi, BrasilApiService>();
 builder.Services.AddScoped<IBancoService, BancoService>();
+builder.Services.AddScoped<ICnpjService, CnpjService>();
 
 builder.Services.AddAutoMapper(typeof(EnderecoMapping));
 builder.Services.AddAutoMapper(typeof(BancoMapping));
+builder.Services.AddAutoMapper(typeof(CnpjMapping));
 
 builder.Services.AddCors();
 

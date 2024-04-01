@@ -12,13 +12,12 @@
 <FluentGrid Spacing="3" Justify="JustifyContent.Center" Style="margin-top:50px">
     @* Consulta CEP *@
     <FluentGridItem xs="6" sm="3">
-        <EditForm Model="Endereco" method="post" FormName="consulta" OnValidSubmit="@Submit">
+        <EditForm Model="EnderecoDto" method="post" FormName="consulta" OnValidSubmit="@Submit">
 
             <div class="form-group">
                 <FluentTextField Appearance="FluentInputAppearance.Filled"
                                  Label="Consultar Cep:" @bind-Value="Cep"
                                  Maxlength="8" Minlength="8" Placeholder="Digite o cep" />
-                @* <ValidationMessage For="() => Endereco!.Cep" class="text-danger" /> *@
             </div>
             <FluentButton IconStart="@(new Icons.Regular.Size16.Globe())"
                           Appearance="Appearance.Accent" Type="ButtonType.Submit">
@@ -29,12 +28,12 @@
 
     @* Consulta Banco *@
     <FluentGridItem xs="6" sm="3">
-        <EditForm Model="Endereco" method="post" FormName="consultaBanco" OnValidSubmit="@Submit">
+        <EditForm Model="EnderecoDto" method="post" FormName="consultaBanco" OnValidSubmit="@Submit">
             <DataAnnotationsValidator />
 
             <div class="form-group">
                 <FluentTextField Appearance="FluentInputAppearance.Filled"
-                                 Label="Consultar Cep:" @bind-Value="Cep"
+                                 Label="Consultar Banco:" @bind-Value="Cep"
                                  Maxlength="8" Minlength="8" Placeholder="Digite Código do Banco" />
             </div>
             <FluentButton IconStart="@(new Icons.Regular.Size16.Globe())"
@@ -46,12 +45,12 @@
 
     @* Consulta CNPJ *@
     <FluentGridItem xs="6" sm="3">
-        <EditForm Model="Endereco" method="post" FormName="consultaCNPJ" OnValidSubmit="@Submit">
+        <EditForm Model="EnderecoDto" method="post" FormName="consultaCNPJ" OnValidSubmit="@Submit">
             <DataAnnotationsValidator />
 
             <div class="form-group">
                 <FluentTextField Appearance="FluentInputAppearance.Filled"
-                                 Label="Consultar Cep:" @bind-Value="Cep"
+                                 Label="Consultar CNPJ:" @bind-Value="Cep"
                                  Maxlength="8" Minlength="8" Placeholder="Digite o CNPJ" />
             </div>
             <FluentButton IconStart="@(new Icons.Regular.Size16.Globe())"
@@ -64,56 +63,39 @@
 
 <FluentGrid Spacing="3" Justify="JustifyContent.Center" Style="margin-top:50px">
     <FluentCard Width="1000px" Height="300px">
-        @if (Endereco.Cep is null)
+        @if (!Consultou)
         {
-            <p>@MessageError</p>
+            <p>Aguardando</p>
+            
         }
         else
         {
             @if (MessageError is not null)
             {
                 <p>@MessageError</p>
+                if(MessageError is not null)
+                {
+                    MessageError = null;
+                }
             }
-            else
+            else 
             {
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Cep</th>
-                            <th scope="col">Estado</th>
-                            <th scope="col">Cidade</th>
-                            <th scope="col">Regiao</th>
-                            <th scope="col">Rua</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>@Endereco.Cep</td>
-                            <td>@Endereco.Etado</td>
-                            <td>@Endereco.Cidade</td>
-                            <td>@Endereco.Regiao</td>
-                            <td>@Endereco.Rua</td>
-                        </tr>
-                    </tbody>
-                </table>
+               
+                <FluentDataGrid Items="Endereco">
+                    <PropertyColumn Property="@(p => p.Cep)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Estado)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Cidade)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Regiao)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.Rua)" Sortable="true" />
+                </FluentDataGrid>
+
+                Consultou = false;
+
             }
         }
     </FluentCard>
 </FluentGrid>
 
-@* <form>
-    <div class="form-group">
-        <label for="CepInput">Digite o Cep</label>
-        <InputText @bind-Value="Cep" class="form-control" id="CepInput" aria-describedby="CepHelp" placeholder="Cep desejado" />
-        <small id="CepHelp" class="form-text text-muted">Digite o Cep para fazemor a requisição.</small>
-    </div>
-</form>
-<div>
-    <button type="submit" class="btn btn-primary">Enviar</button>
-</div>
- *@
 
 @code {
 
@@ -124,26 +106,44 @@
     [SupplyParameterFromForm]
     public string? Cep { get; set; }
 
-    public EnderecoDto? Endereco { get; set; }
+    public IQueryable<EnderecoDto> Endereco { get; set; }
+
+    public EnderecoDto EnderecoDto { get; set; }
+
+    private bool Consultou = false;
 
     public string? MessageError { get; set; }
 
-    protected override void OnInitialized() => Endereco ??= new();
+    protected override void OnInitialized() => EnderecoDto ??= new();
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     await base.OnInitializedAsync();
-    // }
+
 
     private async Task<bool> Submit()
     {
-        if (Cep is not null)
+        if (Cep != "" && Cep is not null)
         {
-            Endereco = await EnderecoService.endereco(Cep);
+            var endereco = await EnderecoService.endereco(Cep);
+            Consultou = true;
+
+            if (endereco.Cep is not null)
+            {
+
+                Endereco = new[] { new EnderecoDto(
+                endereco.Cep,
+                endereco.Estado,
+                endereco.Cidade,
+                endereco.Regiao,
+                endereco.Rua) }.AsQueryable();
+            }
+            else
+            {
+                MessageError = "Falha ao consultar Endereço, todos os Fornecedores retornam erro";
+            }
+
         }
         else
         {
-            MessageError = "Deve ser passado um cep para procurar";
+            MessageError = "Deve ser passado um cep para fazer a pesquisa";
         }
         return await Task.FromResult(true);
 

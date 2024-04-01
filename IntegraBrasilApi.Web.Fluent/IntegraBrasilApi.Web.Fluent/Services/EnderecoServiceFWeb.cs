@@ -33,8 +33,7 @@ namespace IntegraBrasilApi.Web.Services
                 else
                 {
                     var message = await response.Content.ReadAsStringAsync();
-                    _logger.LogError($"Erro a obter Endereço pelo id = {cep} - {message}");
-                    throw new Exception($"Status Code: {response.StatusCode} - {message}");
+                    return new EnderecoDto { Cidade = message };
                 }
             }
             catch(Exception)

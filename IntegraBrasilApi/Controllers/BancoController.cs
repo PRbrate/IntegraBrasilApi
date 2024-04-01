@@ -6,7 +6,7 @@ using System.Net;
 namespace IntegraBrasilApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]    
+    [Route("api/banco/")]    
     public class BancoController : ControllerBase
     {
         private readonly IBancoService _bancoService;
