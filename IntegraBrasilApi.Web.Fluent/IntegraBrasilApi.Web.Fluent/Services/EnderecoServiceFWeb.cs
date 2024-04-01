@@ -33,7 +33,7 @@ namespace IntegraBrasilApi.Web.Services
                 else
                 {
                     var message = await response.Content.ReadAsStringAsync();
-                    return new EnderecoDto { Cidade = message };
+                    return new EnderecoDto();
                 }
             }
             catch(Exception)

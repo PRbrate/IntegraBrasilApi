@@ -12,7 +12,7 @@
 <FluentGrid Spacing="3" Justify="JustifyContent.Center" Style="margin-top:50px">
     @* Consulta CEP *@
     <FluentGridItem xs="6" sm="3">
-        <EditForm Model="EnderecoDto" method="post" FormName="consulta" OnValidSubmit="@Submit">
+        <EditForm Model="EnderecoDto" method="post" FormName="consulta" OnValidSubmit="@SubmitEndereco">
 
             <div class="form-group">
                 <FluentTextField Appearance="FluentInputAppearance.Filled"
@@ -28,7 +28,7 @@
 
     @* Consulta Banco *@
     <FluentGridItem xs="6" sm="3">
-        <EditForm Model="EnderecoDto" method="post" FormName="consultaBanco" OnValidSubmit="@Submit">
+        <EditForm Model="EnderecoDto" method="post" FormName="consultaBanco" OnValidSubmit="@SubmitEndereco">
             <DataAnnotationsValidator />
 
             <div class="form-group">
@@ -45,13 +45,13 @@
 
     @* Consulta CNPJ *@
     <FluentGridItem xs="6" sm="3">
-        <EditForm Model="EnderecoDto" method="post" FormName="consultaCNPJ" OnValidSubmit="@Submit">
+        <EditForm Model="EnderecoDto" method="post" FormName="consultaCNPJ" OnValidSubmit="@SubmitCnpj">
             <DataAnnotationsValidator />
 
             <div class="form-group">
                 <FluentTextField Appearance="FluentInputAppearance.Filled"
-                                 Label="Consultar CNPJ:" @bind-Value="Cep"
-                                 Maxlength="8" Minlength="8" Placeholder="Digite o CNPJ" />
+                                 Label="Consultar CNPJ:" @bind-Value="CnpjId"
+                                 Maxlength="14" Minlength="14" Placeholder="Digite o CNPJ" />
             </div>
             <FluentButton IconStart="@(new Icons.Regular.Size16.Globe())"
                           Appearance="Appearance.Accent" Type="ButtonType.Submit">
@@ -66,21 +66,21 @@
         @if (!Consultou)
         {
             <p>Aguardando</p>
-            
+
         }
         else
         {
             @if (MessageError is not null)
             {
                 <p>@MessageError</p>
-                if(MessageError is not null)
+                if (MessageError is not null)
                 {
                     MessageError = null;
                 }
             }
-            else 
+            else if (SubmeteuEnd)
             {
-               
+
                 <FluentDataGrid Items="Endereco">
                     <PropertyColumn Property="@(p => p.Cep)" Sortable="true" />
                     <PropertyColumn Property="@(p => p.Estado)" Sortable="true" />
@@ -90,8 +90,29 @@
                 </FluentDataGrid>
 
                 Consultou = false;
+                SubmeteuEnd = false;
 
             }
+            else if (SubmeteuCnpj)
+            {
+                <FluentDataGrid Items="CnpjList">
+                    <PropertyColumn Property="@(p => p.cnpj)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.razao_social)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.nome_fantasia)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.situacao_cadastral)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.cep)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.uf)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.municipio)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.ddd_telefone_1)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.qualificacao_do_responsavel)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.capital_social)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.descricao_porte)" Sortable="true" />
+
+                </FluentDataGrid>
+                Consultou = false;
+                SubmeteuCnpj = false;
+            }
+
         }
     </FluentCard>
 </FluentGrid>
@@ -99,53 +120,4 @@
 
 @code {
 
-
-    [Inject]
-    public IEnderecoServiceFWeb? EnderecoService { get; set; }
-
-    [SupplyParameterFromForm]
-    public string? Cep { get; set; }
-
-    public IQueryable<EnderecoDto> Endereco { get; set; }
-
-    public EnderecoDto EnderecoDto { get; set; }
-
-    private bool Consultou = false;
-
-    public string? MessageError { get; set; }
-
-    protected override void OnInitialized() => EnderecoDto ??= new();
-
-
-
-    private async Task<bool> Submit()
-    {
-        if (Cep != "" && Cep is not null)
-        {
-            var endereco = await EnderecoService.endereco(Cep);
-            Consultou = true;
-
-            if (endereco.Cep is not null)
-            {
-
-                Endereco = new[] { new EnderecoDto(
-                endereco.Cep,
-                endereco.Estado,
-                endereco.Cidade,
-                endereco.Regiao,
-                endereco.Rua) }.AsQueryable();
-            }
-            else
-            {
-                MessageError = "Falha ao consultar Endereço, todos os Fornecedores retornam erro";
-            }
-
-        }
-        else
-        {
-            MessageError = "Deve ser passado um cep para fazer a pesquisa";
-        }
-        return await Task.FromResult(true);
-
-    }
 }
