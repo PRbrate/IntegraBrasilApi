@@ -61,12 +61,12 @@
     </FluentGridItem>
 </FluentGrid>
 
+
 <FluentGrid Spacing="3" Justify="JustifyContent.Center" Style="margin-top:50px">
     <FluentCard Width="1000px" Height="300px">
         @if (!Consultou)
         {
-            <p>Aguardando</p>
-
+            <p>Aguardando</p>             
         }
         else
         {
@@ -82,11 +82,11 @@
             {
 
                 <FluentDataGrid Items="Endereco">
-                    <PropertyColumn Property="@(p => p.Cep)" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.Estado)" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.Cidade)" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.Regiao)" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.Rua)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.cep)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.state)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.city)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.neighborhood)" Sortable="true" />
+                    <PropertyColumn Property="@(p => p.street)" Sortable="true" />
                 </FluentDataGrid>
 
                 Consultou = false;
@@ -95,24 +95,20 @@
             }
             else if (SubmeteuCnpj)
             {
-                <FluentDataGrid Items="CnpjList">
-                    <PropertyColumn Property="@(p => p.cnpj)" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.razao_social)" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.nome_fantasia)" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.situacao_cadastral)" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.cep)" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.uf)" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.municipio)" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.ddd_telefone_1)" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.qualificacao_do_responsavel)" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.capital_social)" Sortable="true" />
-                    <PropertyColumn Property="@(p => p.descricao_porte)" Sortable="true" />
-
-                </FluentDataGrid>
+                <h4>Razão Social</h4>
+                <FluentTextArea @bind-Value=CnpjDto.razao_social style="width: 98%; height:15%" Appearance="FluentInputAppearance.Filled" ReadOnly="true"></FluentTextArea>
+                <FluentTextArea @bind-Value=CnpjDto.cnpj style="width: 49%; height:25% " Appearance="FluentInputAppearance.Filled" ReadOnly="true"> CNPJ</FluentTextArea>
+                <FluentTextArea @bind-Value=CnpjDto.nome_fantasia style="width: 49%; height:25%" Appearance="FluentInputAppearance.Filled" ReadOnly="true">Nome Fantasia</FluentTextArea>
+                <FluentNumberField @bind-Value=CnpjDto.cep style="width: 20%; height:25%" Appearance="FluentInputAppearance.Filled" ReadOnly="true">Cep</FluentNumberField>
+                <FluentTextArea @bind-Value=CnpjDto.uf style="width: 20%; height:25%" Appearance="FluentInputAppearance.Filled" ReadOnly="true">UF</FluentTextArea>
+                <FluentTextArea @bind-Value=CnpjDto.municipio style="width: 58%; height:26%" Appearance="FluentInputAppearance.Filled" ReadOnly="true">Municipio</FluentTextArea>
+                <FluentTextArea @bind-Value=CnpjDto.ddd_telefone_1 style="width: 20%; height:25%" Appearance="FluentInputAppearance.Filled" ReadOnly="true">Telefone</FluentTextArea>
+                <FluentNumberField @bind-Value=CnpjDto.capital_social style="width: 20%; height:25%" Appearance="FluentInputAppearance.Filled" ReadOnly="true">Capital Social</FluentNumberField>
+                <FluentTextArea @bind-Value=CnpjDto.descricao_porte style="width: 58%; height:25%" Appearance="FluentInputAppearance.Filled" ReadOnly="true">Porte</FluentTextArea>
+               
                 Consultou = false;
                 SubmeteuCnpj = false;
             }
-
         }
     </FluentCard>
 </FluentGrid>

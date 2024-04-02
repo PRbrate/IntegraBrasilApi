@@ -1,25 +1,15 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace IntegraBrasilApi.Entities
 {
     public class Endereco
     {
-        [JsonPropertyName("cep")]
-        public string? Cep { get; set; }
-
-        [JsonPropertyName("state")]
-        public string? Estado { get; set; }
-
-        [JsonPropertyName("city")]
-        public string? Cidade { get; set; }
-
-        [JsonPropertyName("neighborhood")]
-        public string? Regiao { get; set; }
-
-        [JsonPropertyName("street")]
-        public string? Rua { get; set; }
-
-        [JsonPropertyName("service")]
-        public string? Servico { get; set; }
+        public string cep { get; set; }
+        public string state { get; set; }
+        public string city { get; set; }
+        public string neighborhood { get; set; }
+        public string street { get; set; }
+        public string service { get; set; }
     }
 }

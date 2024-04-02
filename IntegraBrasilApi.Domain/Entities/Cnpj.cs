@@ -44,12 +44,11 @@ namespace IntegraBrasilApi.Entities
         public string cnpj { get; set; }
         public string razao_social { get; set; }
         public string nome_fantasia { get; set; }
-        public int situacao_cadastral { get; set; }
+        public string descricao_situacao_cadastral { get; set; }
         public int cep { get; set; }
         public string uf { get; set; }
         public string municipio { get; set; }
         public string ddd_telefone_1 { get; set; }
-        public int qualificacao_do_responsavel { get; set; }
         public int capital_social { get; set; }
         public string descricao_porte { get; set; }
 

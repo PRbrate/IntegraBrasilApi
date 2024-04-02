@@ -20,39 +20,15 @@ namespace IntegraBrasilApi.Web.Fluent.Components.Pages
 
         [SupplyParameterFromForm]
         public string? CnpjId { get; set; }
-        public IQueryable<CnpjDto>? CnpjList { get; set; }
-        public CnpjDto? CnpjDto { get; set; }
+        public CnpjDto? CnpjDto { get; set; } = new();
 
         private async Task<bool> SubmitCnpj()
         {
-            if (CnpjId != "" && CnpjId is not null)
+            if (!string.IsNullOrEmpty(CnpjId))
             {
-                var cnpj = await CnpjService.GetCnpj(CnpjId);
+                CnpjDto = await CnpjService.GetCnpj(CnpjId);
                 Consultou = true;
                 SubmeteuCnpj = true;
-
-                if (cnpj.cnpj is not null)
-                {
-
-                    CnpjList = new[] { new CnpjDto(
-                    cnpj.cnpj,
-                    cnpj.razao_social,
-                    cnpj.nome_fantasia,
-                    cnpj.situacao_cadastral,
-                    cnpj.cep,
-                    cnpj.uf,
-                    cnpj.municipio,
-                    cnpj.ddd_telefone_1,
-                    cnpj.qualificacao_do_responsavel,
-                    cnpj.capital_social,
-                    cnpj.descricao_porte
-                    )}.AsQueryable();
-                }
-                else
-                {
-                    MessageError = "Falha ao consultar Cnpj, todos os Fornecedores retornam erro";
-                }
-
             }
             else
             {
@@ -72,31 +48,29 @@ namespace IntegraBrasilApi.Web.Fluent.Components.Pages
         private bool SubmeteuEnd = false; 
 
         [SupplyParameterFromForm]
-        public string? Cep { get; set; }
+        public string Cep { get; set; }
 
-        public IQueryable<EnderecoDto>? Endereco { get; set; }
+        public IQueryable<EnderecoDto> Endereco { get; set; }
 
-        public EnderecoDto? EnderecoDto { get; set; }
+        public EnderecoDto EnderecoDto { get; set; }
 
         protected override void OnInitialized() => EnderecoDto ??= new();
 
         private async Task<bool> SubmitEndereco()
         {
-            if (Cep != "" && Cep is not null)
+            if (!string.IsNullOrEmpty(Cep))
             {
-                var endereco = await EnderecoService.endereco(Cep);
-                Consultou = true;
-                SubmeteuEnd = true;
-
-                if (endereco.Cep is not null)
+                EnderecoDto = await EnderecoService.endereco(Cep);
+                
+                if (EnderecoDto.city is not null)
                 {
 
                     Endereco = new[] { new EnderecoDto(
-                endereco.Cep,
-                endereco.Estado,
-                endereco.Cidade,
-                endereco.Regiao,
-                endereco.Rua) }.AsQueryable();
+                    EnderecoDto.cep,
+                    EnderecoDto.state,
+                    EnderecoDto.city,
+                    EnderecoDto.neighborhood,
+                    EnderecoDto.street) }.AsQueryable();
                 }
                 else
                 {
@@ -108,8 +82,9 @@ namespace IntegraBrasilApi.Web.Fluent.Components.Pages
             {
                 MessageError = "Deve ser passado um cep para fazer a pesquisa";
             }
+            Consultou = true;
+            SubmeteuEnd = true;
             return await Task.FromResult(true);
-
         }
         #endregion
     }
