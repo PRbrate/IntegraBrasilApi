@@ -1,5 +1,6 @@
 using IntegraBrasilApi.Web.Fluent.Components;
 using IntegraBrasilApi.Web.Fluent.Services;
+using IntegraBrasilApi.Web.Fluent.Services.Interface;
 using IntegraBrasilApi.Web.Services;
 using IntegraBrasilApi.Web.Services.Interfaces;
 using Microsoft.FluentUI.AspNetCore.Components;
@@ -21,6 +22,7 @@ builder.Services.AddScoped(sp => new HttpClient
 
 builder.Services.AddScoped<IEnderecoServiceFWeb, EnderecoServiceFWeb>();
 builder.Services.AddScoped<ICnpjService, CnpjServiceFWeb>();
+builder.Services.AddScoped<IBancoService, BancoServiceFWeb>();
 
 var app = builder.Build();
 

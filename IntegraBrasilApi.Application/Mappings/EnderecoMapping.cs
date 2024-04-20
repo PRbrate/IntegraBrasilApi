@@ -2,15 +2,29 @@
 using IntegraBrasilApi.DTOs;
 using IntegraBrasilApi.Entities;
 
+
 namespace IntegraBrasilApi.Mappings
 {
-    public class EnderecoMapping : Profile
+    public static class EnderecoMapping
     {
-        public EnderecoMapping()
+
+        public static EnderecoDto ConverterEnderecoParaDto(this Endereco endereco) 
         {
-            CreateMap(typeof(ResponseGeneric<>), typeof(ResponseGeneric<>));
-            CreateMap<EnderecoDto, Endereco>();
-            CreateMap<Endereco, EnderecoDto>();
+            return new EnderecoDto
+            {
+                Cep = endereco.cep,
+                Estado = endereco.state,
+                Cidade = endereco.city,
+                Regiao = endereco.neighborhood,
+                Rua = endereco.street
+            };
         }
+
+        //public EnderecoMapping()
+        //{
+        //    CreateMap(typeof(ResponseGeneric<>), typeof(ResponseGeneric<>));
+        //    CreateMap<EnderecoDto, Endereco>();
+        //    CreateMap<Endereco, EnderecoDto>();
+        //}
     }
 }

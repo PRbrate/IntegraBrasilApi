@@ -1,8 +1,8 @@
 ﻿using IntegraBrasilApi.Application.DTOs;
 using IntegraBrasilApi.DTOs;
+using IntegraBrasilApi.Web.Fluent.Services.Interface;
 using IntegraBrasilApi.Web.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
-using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace IntegraBrasilApi.Web.Fluent.Components.Pages
 {
@@ -45,7 +45,7 @@ namespace IntegraBrasilApi.Web.Fluent.Components.Pages
         [Inject]
         public IEnderecoServiceFWeb? EnderecoService { get; set; }
 
-        private bool SubmeteuEnd = false; 
+        private bool SubmeteuEnd = false;
 
         [SupplyParameterFromForm]
         public string Cep { get; set; }
@@ -61,16 +61,16 @@ namespace IntegraBrasilApi.Web.Fluent.Components.Pages
             if (!string.IsNullOrEmpty(Cep))
             {
                 EnderecoDto = await EnderecoService.endereco(Cep);
-                
-                if (EnderecoDto.city is not null)
+
+                if (EnderecoDto.Cidade is not null)
                 {
 
                     Endereco = new[] { new EnderecoDto(
-                    EnderecoDto.cep,
-                    EnderecoDto.state,
-                    EnderecoDto.city,
-                    EnderecoDto.neighborhood,
-                    EnderecoDto.street) }.AsQueryable();
+                    EnderecoDto.Cep,
+                    EnderecoDto.Estado,
+                    EnderecoDto.Cidade,
+                    EnderecoDto.Regiao,
+                    EnderecoDto.Rua) }.AsQueryable();
                 }
                 else
                 {
@@ -87,5 +87,50 @@ namespace IntegraBrasilApi.Web.Fluent.Components.Pages
             return await Task.FromResult(true);
         }
         #endregion
+
+        #region banco
+        [Inject]
+        public IBancoService? BancoService { get; set; }
+
+        private bool SubmeteuBanco = false;
+
+        [SupplyParameterFromForm]
+        public string Banco { get; set; }
+
+        public IQueryable<BancoDto> BancoDtos { get; set; }
+
+        public BancoDto BancoDto { get; set; }
+
+        private async Task<bool> SubmitBanco()
+        {
+            if (!string.IsNullOrEmpty(Banco))
+            {
+                BancoDto = await BancoService.banco(Banco);
+
+                if (BancoDto.Ispb is not null)
+                {
+
+                    BancoDtos = new[] { new BancoDto(
+                    BancoDto.Ispb,
+                    BancoDto.NomeAbreviado,
+                    BancoDto.Codigo,
+                    BancoDto.NomeCompleto) }.AsQueryable();
+                }
+                else
+                {
+                    MessageError = "Falha ao consultar Banco, todos os Fornecedores retornam erro";
+                }
+
+            }
+            else
+            {
+                MessageError = "Deve ser passado um Código Banco para fazer a pesquisa";
+            }
+            Consultou = true;
+            SubmeteuBanco = true;
+            return await Task.FromResult(true);
+
+            #endregion
+        }
     }
 }

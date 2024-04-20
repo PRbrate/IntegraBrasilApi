@@ -4,14 +4,24 @@ using IntegraBrasilApi.Entities;
 
 namespace IntegraBrasilApi.Mappings
 {
-    public class BancoMapping : Profile
+    public static class BancoMapping
     {
 
-        public BancoMapping()
+        public static BancoDto ConverterBancoParaDto(this Banco banco)
         {
-            CreateMap(typeof(ResponseGeneric<>), typeof(ResponseGeneric<>));
-            CreateMap<BancoDto, Banco>();
-            CreateMap<Banco, BancoDto>();
+            return new BancoDto
+            {
+                Ispb = banco.ispb,
+                NomeAbreviado = banco.name,
+                Codigo = banco.code,
+                NomeCompleto = banco.fullName
+            };
         }
+        //public BancoMapping()
+        //{
+        //    CreateMap(typeof(ResponseGeneric<>), typeof(ResponseGeneric<>));
+        //    CreateMap<BancoDto, Banco>();
+        //    CreateMap<Banco, BancoDto>();
+        //}
     }
 }

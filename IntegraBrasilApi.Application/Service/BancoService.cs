@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using IntegraBrasilApi.DTOs;
-using IntegraBrasilApi.Entities;
 using IntegraBrasilApi.Service.Intefaces;
+using IntegraBrasilApi.Mappings;
 
 namespace IntegraBrasilApi.Service
 {
@@ -26,7 +26,14 @@ namespace IntegraBrasilApi.Service
         public async Task<ResponseGeneric<BancoDto>> GetBancoId(string codigoBanco)
         {
             var banco = await _brasilApi.GetBancoId(codigoBanco);
-            return _mapper.Map<ResponseGeneric<BancoDto>>(banco);
+            var bancoDto = banco.DataReturn.ConverterBancoParaDto();
+            var response = new ResponseGeneric<BancoDto>() 
+            { 
+                StatusCode = banco.StatusCode,
+                DataReturn = bancoDto,
+                ErroRetorno = banco.ErroRetorno
+            };
+            return response;
         }
 
     }
